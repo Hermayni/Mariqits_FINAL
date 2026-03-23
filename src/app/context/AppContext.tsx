@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import { products as initialProducts } from '../data/products';
 
 // Types
 export interface Product {
@@ -174,61 +175,7 @@ const usersDb: User[] = [
   }
 ];
 
-// Mock products database
-const productsDb: Product[] = [
-  {
-    id: '1',
-    name: 'CloudBeauty Makeup Lip Gloss',
-    brand: 'CloudBeauty',
-    price: 199,
-    stock: 78,
-    rating: 4.9,
-    reviews: 256,
-    category: 'Makeup',
-    description: 'Long-lasting, ultra-glossy lip gloss with moisturizing formula',
-    image: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f8e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216%22 fill=%22%23cc5590%22%3EImage%3C/text%3E%3C/svg%3E',
-    inStock: true
-  },
-  {
-    id: '2',
-    name: 'Popique All-Over Multiuse Cream Palette',
-    brand: 'Popique',
-    price: 499,
-    stock: 34,
-    rating: 4.9,
-    reviews: 192,
-    category: 'Makeup',
-    description: 'Versatile cream palette for eyes, cheeks, and lips',
-    image: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f8e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216%22 fill=%22%23cc5590%22%3EImage%3C/text%3E%3C/svg%3E',
-    inStock: true
-  },
-  {
-    id: '3',
-    name: 'Issy Cowgirl Fat Gloss',
-    brand: 'Issy',
-    price: 599,
-    stock: 92,
-    rating: 4.8,
-    reviews: 167,
-    category: 'Makeup',
-    description: 'High-shine plumping gloss with vitamin E',
-    image: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f8e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216%22 fill=%22%23cc5590%22%3EImage%3C/text%3E%3C/svg%3E',
-    inStock: true
-  },
-  {
-    id: '4',
-    name: 'Happy Skin Perfect Brows Grip',
-    brand: 'Happy Skin',
-    price: 299,
-    stock: 103,
-    rating: 4.6,
-    reviews: 178,
-    category: 'Makeup',
-    description: 'Precision brow pencil with long-lasting formula',
-    image: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f8e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216%22 fill=%22%23cc5590%22%3EImage%3C/text%3E%3C/svg%3E',
-    inStock: true
-  }
-];
+// Products loaded from data/products.ts via initialProducts import
 
 export function AppProvider({ children }: { children: ReactNode }) {
   // User state
@@ -236,7 +183,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   
   // Products state
-  const [products, setProducts] = useState<Product[]>(productsDb);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   
   // Cart state
   const [cart, setCart] = useState<CartItem[]>([]);
