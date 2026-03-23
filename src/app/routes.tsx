@@ -16,6 +16,7 @@ import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
 import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
+import ProductsPage from "./pages/ProductsPage";
 import NotFound from "./pages/NotFound";
 
 export const router = createBrowserRouter([
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
   {
     path: "/search",
     Component: SearchResultsPage,
+  },
+  {
+    path: "/products",
+    Component: ProductsPage,
   },
   {
     path: "/signin",

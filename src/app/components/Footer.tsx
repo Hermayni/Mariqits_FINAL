@@ -90,19 +90,19 @@ export default function Footer() {
               </p>
             </div>
             <div className="content-stretch flex flex-col gap-[8px] h-[132px] items-start relative shrink-0 w-full">
-              <button className="h-[20px] text-left hover:text-[#ff1a75] transition-colors cursor-pointer">
+              <button onClick={() => navigate('/products')} className="h-[20px] text-left hover:text-[#ff1a75] transition-colors cursor-pointer">
                 <p className="font-['Plus_Jakarta_Sans:Regular',sans-serif] font-normal leading-[20px] text-[#4a5565] text-[14px]">Skincare</p>
               </button>
-              <button className="h-[20px] text-left hover:text-[#ff1a75] transition-colors cursor-pointer">
+              <button onClick={() => navigate('/products')} className="h-[20px] text-left hover:text-[#ff1a75] transition-colors cursor-pointer">
                 <p className="font-['Plus_Jakarta_Sans:Regular',sans-serif] font-normal leading-[20px] text-[#4a5565] text-[14px]">Makeup</p>
               </button>
-              <button className="h-[20px] text-left hover:text-[#ff1a75] transition-colors cursor-pointer">
+              <button onClick={() => navigate('/products')} className="h-[20px] text-left hover:text-[#ff1a75] transition-colors cursor-pointer">
                 <p className="font-['Plus_Jakarta_Sans:Regular',sans-serif] font-normal leading-[20px] text-[#4a5565] text-[14px]">Hair Care</p>
               </button>
-              <button className="h-[20px] text-left hover:text-[#ff1a75] transition-colors cursor-pointer">
+              <button onClick={() => navigate('/products')} className="h-[20px] text-left hover:text-[#ff1a75] transition-colors cursor-pointer">
                 <p className="font-['Plus_Jakarta_Sans:Regular',sans-serif] font-normal leading-[20px] text-[#4a5565] text-[14px]">Fragrance</p>
               </button>
-              <button className="h-[20px] text-left hover:text-[#ff1a75] transition-colors cursor-pointer">
+              <button onClick={() => navigate('/products')} className="h-[20px] text-left hover:text-[#ff1a75] transition-colors cursor-pointer">
                 <p className="font-['Plus_Jakarta_Sans:Regular',sans-serif] font-normal leading-[20px] text-[#4a5565] text-[14px]">Body Care</p>
               </button>
             </div>
