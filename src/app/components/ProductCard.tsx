@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router';
 import { useApp } from '../context/AppContext';
 import { Product } from '../context/AppContext';
+import { useNotification } from '../context/NotificationContext';
 import svgPaths from '../../imports/svg-6pk6qac8nv';
 
 export default function ProductCard({ product, showBadge = false }: { product: Product; showBadge?: boolean }) {
   const navigate = useNavigate();
   const { addToCart, addToWishlist, isInWishlist, removeFromWishlist } = useApp();
+  const { showNotification } = useNotification();
 
   const handleProductClick = () => {
     navigate(`/product/${product.id}`);
@@ -14,6 +16,7 @@ export default function ProductCard({ product, showBadge = false }: { product: P
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     addToCart(product, 1);
+    showNotification('cart', `${product.name} added to cart!`);
   };
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
@@ -22,6 +25,7 @@ export default function ProductCard({ product, showBadge = false }: { product: P
       removeFromWishlist(product.id);
     } else {
       addToWishlist(product);
+      showNotification('wishlist', `${product.name} added to wishlist!`);
     }
   };
 

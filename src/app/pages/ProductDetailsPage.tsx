@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import Layout from '../components/Layout';
-import { useApp } from '../context/AppContext';
-import { getProductById } from '../data/products';
+import { useApp, Shade } from '../context/AppContext';
+import { useNotification } from '../context/NotificationContext';
 import svgPaths from '../../imports/svg-gtkd467we';
 
 export default function ProductDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { addToCart, addToWishlist, isInWishlist, removeFromWishlist } = useApp();
+  const { addToCart, addToWishlist, isInWishlist, removeFromWishlist, getProductById } = useApp();
+  const { showNotification } = useNotification();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedShade, setSelectedShade] = useState<Shade | null>(null);
   
   const product = id ? getProductById(id) : null;
   
@@ -35,7 +37,9 @@ export default function ProductDetailsPage() {
   }
   
   const handleAddToCart = () => {
-    addToCart(product, quantity);
+    if (hasShades && !selectedShade) return;
+    addToCart(product, quantity, selectedShade ?? undefined);
+    showNotification('cart', `${product.name} added to cart!`);
   };
   
   const handleToggleWishlist = () => {
@@ -43,11 +47,16 @@ export default function ProductDetailsPage() {
       removeFromWishlist(product.id);
     } else {
       addToWishlist(product);
+      showNotification('wishlist', `${product.name} added to wishlist!`);
     }
   };
   
-  // Mock additional images
-  const productImages = [product.image, product.image, product.image, product.image];
+  const productImages = product.images && product.images.length > 0
+    ? product.images
+    : [product.image];
+
+  const hasShades = product.shades && product.shades.length > 0;
+  const needsShadeSelection = hasShades && !selectedShade;
   
   return (
     <Layout>
@@ -68,21 +77,23 @@ export default function ProductDetailsPage() {
             {/* Product Images */}
             <div>
               <div className="aspect-square bg-[#fffbf0] rounded-[16px] mb-[16px] overflow-hidden">
-                <img src={productImages[selectedImage]} alt={product.name} className="w-full h-full object-cover" />
+                <img src={productImages[selectedImage] || product.image} alt={product.name} className="w-full h-full object-cover" />
               </div>
-              <div className="grid grid-cols-4 gap-[12px]">
-                {productImages.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setSelectedImage(idx)}
-                    className={`aspect-square bg-[#fffbf0] rounded-[12px] overflow-hidden border-[2px] ${
-                      selectedImage === idx ? 'border-[#ff1a75]' : 'border-transparent'
-                    }`}
-                  >
-                    <img src={img} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
+              {productImages.length > 1 && (
+                <div className={`grid gap-[12px] ${productImages.length >= 4 ? 'grid-cols-4' : `grid-cols-${productImages.length}`}`}>
+                  {productImages.map((img, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedImage(idx)}
+                      className={`aspect-square bg-[#fffbf0] rounded-[12px] overflow-hidden border-[2px] ${
+                        selectedImage === idx ? 'border-[#ff1a75]' : 'border-transparent'
+                      }`}
+                    >
+                      <img src={img} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             
             {/* Product Info */}
@@ -128,20 +139,40 @@ export default function ProductDetailsPage() {
                     <path d="M7.5 10L9.16667 11.6667L12.5 8.33333M18.3333 10C18.3333 14.6024 14.6024 18.3333 10 18.3333C5.39763 18.3333 1.66667 14.6024 1.66667 10C1.66667 5.39763 5.39763 1.66667 10 1.66667C14.6024 1.66667 18.3333 5.39763 18.3333 10Z" stroke="#10B981" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.66667"/>
                   </svg>
                   <p className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[14px] text-green-600">
-                    ✓ In Stock - {product.availableShades ? `${product.availableShades} available` : '47 available'}
+                    ✓ In Stock - {selectedShade ? `${selectedShade.stock} available` : product.stock ? `${product.stock} available` : '47 available'}
                   </p>
                 </div>
               )}
               
-              {product.availableShades && (
+              {product.shades && product.shades.length > 0 && (
                 <div className="mb-[32px]">
                   <h3 className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[16px] text-[#2d2d2d] mb-[12px]">
-                    Shades
+                    Shades <span className="text-[#ff1a75] text-[13px] font-normal">*required</span>
                   </h3>
-                  <div className="flex gap-[8px]">
-                    <button className="size-[40px] rounded-full bg-[#ffb3ba] border-[2px] border-[#ff1a75]" />
-                    <button className="size-[40px] rounded-full bg-[#ff6b6b] border-[2px] border-transparent hover:border-[#ff1a75]" />
+                  <div className="flex flex-wrap gap-[12px]">
+                    {product.shades.map(shade => (
+                      <div key={shade.id} className="flex flex-col items-center gap-[4px]">
+                        <button
+                          onClick={() => setSelectedShade(shade)}
+                          style={{ backgroundColor: shade.color }}
+                          className={`size-[40px] rounded-full border-[2px] transition-colors ${
+                            selectedShade?.id === shade.id ? 'border-[#ff1a75] ring-2 ring-[#ff1a75] ring-offset-2' : 'border-transparent hover:border-[#ff1a75]'
+                          }`}
+                          title={shade.name}
+                        />
+                        <span className={`font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[10px] max-w-[56px] text-center truncate ${
+                          selectedShade?.id === shade.id ? 'text-[#ff1a75] font-semibold' : 'text-[#4a5565]'
+                        }`}>
+                          {shade.name}
+                        </span>
+                      </div>
+                    ))}
                   </div>
+                  {needsShadeSelection && (
+                    <p className="font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[12px] text-[#ff1a75] mt-[8px]">
+                      Please select a shade to continue
+                    </p>
+                  )}
                 </div>
               )}
               
@@ -171,9 +202,14 @@ export default function ProductDetailsPage() {
               <div className="flex gap-[16px] mb-[32px]">
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 bg-[#ff1a75] text-white h-[56px] rounded-[26843500px] hover:bg-[#e01666] transition-colors font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[16px]"
+                  disabled={!!needsShadeSelection}
+                  className={`flex-1 h-[56px] rounded-[26843500px] transition-colors font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[16px] ${
+                    needsShadeSelection
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-[#ff1a75] text-white hover:bg-[#e01666]'
+                  }`}
                 >
-                  Add to Cart
+                  {needsShadeSelection ? 'Select a Shade' : 'Add to Cart'}
                 </button>
                 <button
                   onClick={handleToggleWishlist}

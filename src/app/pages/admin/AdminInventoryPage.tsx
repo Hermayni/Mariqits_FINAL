@@ -3,23 +3,44 @@ import AdminLayout from '../../components/admin/AdminLayout';
 import { useAdmin } from '../../context/AdminContext';
 
 export default function AdminInventoryPage() {
-  const { adminProducts } = useAdmin();
+  const { adminProducts, updateProduct, deleteProduct } = useAdmin();
   const [searchQuery, setSearchQuery] = useState('');
-  
+  const [editingStockId, setEditingStockId] = useState<string | null>(null);
+  const [editStockValue, setEditStockValue] = useState('');
+
   const filteredProducts = adminProducts.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  
+
   const totalProducts = adminProducts.length;
   const lowStock = adminProducts.filter(p => p.stock > 0 && p.stock <= 50).length;
   const outOfStock = adminProducts.filter(p => p.stock === 0).length;
-  
+
   const getStockStatus = (stock: number) => {
     if (stock > 50) return { label: 'In Stock', color: 'bg-green-100 text-green-800' };
     if (stock > 0) return { label: 'Low Stock', color: 'bg-yellow-100 text-yellow-800' };
     return { label: 'Out of Stock', color: 'bg-red-100 text-red-800' };
   };
-  
+
+  const handleEditStock = (id: string, currentStock: number) => {
+    setEditingStockId(id);
+    setEditStockValue(currentStock.toString());
+  };
+
+  const handleSaveStock = (id: string) => {
+    const newStock = parseInt(editStockValue);
+    if (!isNaN(newStock) && newStock >= 0) {
+      updateProduct(id, { stock: newStock });
+    }
+    setEditingStockId(null);
+  };
+
+  const handleDelete = (id: string, name: string) => {
+    if (window.confirm(`Are you sure you want to delete "${name}"?`)) {
+      deleteProduct(id);
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="p-[32px]">
@@ -27,7 +48,7 @@ export default function AdminInventoryPage() {
           <h1 className="font-['Playfair_Display:Bold',sans-serif] font-bold text-[32px] text-[#2d2d2d] mb-[4px]">Inventory</h1>
           <p className="font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[16px] text-[#4a5565]">Monitor stock levels and inventory</p>
         </div>
-        
+
         <div className="grid grid-cols-3 gap-[24px] mb-[32px]">
           <div className="bg-white rounded-[16px] p-[24px] border-[1px] border-[rgba(0,0,0,0.05)]">
             <div className="bg-blue-100 rounded-[12px] size-[48px] flex items-center justify-center mb-[16px]">
@@ -52,7 +73,7 @@ export default function AdminInventoryPage() {
             <p className="font-['Playfair_Display:Bold',sans-serif] font-bold text-[28px] text-[#2d2d2d]">{outOfStock}</p>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-[16px] border-[1px] border-[rgba(0,0,0,0.05)]">
           <div className="p-[24px] border-b border-gray-100">
             <label className="font-['Plus_Jakarta_Sans:Medium',sans-serif] font-medium text-[12px] text-[#4a5565] block mb-[8px]">Search Products</label>
@@ -64,7 +85,7 @@ export default function AdminInventoryPage() {
               className="w-full h-[44px] rounded-[12px] border-[1px] border-[rgba(0,0,0,0.1)] px-[16px] font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[14px] text-[#2d2d2d] outline-none focus:border-[#ff1a75] transition-colors"
             />
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50">
@@ -101,9 +122,25 @@ export default function AdminInventoryPage() {
                         <p className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[14px] text-[#2d2d2d]">₱{product.price}</p>
                       </td>
                       <td className="py-[16px] px-[16px] text-center">
-                        <p className={`font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[14px] ${product.stock > 50 ? 'text-green-600' : product.stock > 0 ? 'text-yellow-600' : 'text-red-600'}`}>
-                          {product.stock}
-                        </p>
+                        {editingStockId === product.id ? (
+                          <div className="flex items-center justify-center gap-[4px]">
+                            <input
+                              type="number"
+                              value={editStockValue}
+                              onChange={(e) => setEditStockValue(e.target.value)}
+                              min="0"
+                              className="w-[60px] h-[28px] rounded-[6px] border-[1px] border-[#ff1a75] px-[6px] text-center font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[13px] outline-none"
+                              autoFocus
+                              onKeyDown={(e) => { if (e.key === 'Enter') handleSaveStock(product.id); if (e.key === 'Escape') setEditingStockId(null); }}
+                            />
+                            <button onClick={() => handleSaveStock(product.id)} className="text-green-600 hover:text-green-700 text-[16px]" title="Save">✓</button>
+                            <button onClick={() => setEditingStockId(null)} className="text-red-500 hover:text-red-600 text-[16px]" title="Cancel">✕</button>
+                          </div>
+                        ) : (
+                          <p className={`font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[14px] ${product.stock > 50 ? 'text-green-600' : product.stock > 0 ? 'text-yellow-600' : 'text-red-600'}`}>
+                            {product.stock}
+                          </p>
+                        )}
                       </td>
                       <td className="py-[16px] px-[16px] text-center">
                         <div className="flex items-center justify-center gap-[4px]">
@@ -122,7 +159,7 @@ export default function AdminInventoryPage() {
                       <td className="py-[16px] px-[24px]">
                         <div className="flex items-center justify-center gap-[8px]">
                           <button
-                            onClick={() => alert(`Edit stock for ${product.name} (Demo)`)}
+                            onClick={() => handleEditStock(product.id, product.stock)}
                             className="text-blue-600 hover:text-blue-700 transition-colors"
                             title="Edit Stock"
                           >
@@ -131,7 +168,7 @@ export default function AdminInventoryPage() {
                             </svg>
                           </button>
                           <button
-                            onClick={() => alert(`Delete ${product.name} (Demo)`)}
+                            onClick={() => handleDelete(product.id, product.name)}
                             className="text-red-600 hover:text-red-700 transition-colors"
                             title="Delete"
                           >
@@ -147,7 +184,7 @@ export default function AdminInventoryPage() {
               </tbody>
             </table>
           </div>
-          
+
           <div className="p-[24px] border-t border-gray-100">
             <div className="bg-gray-50 rounded-[12px] p-[32px] text-center">
               <div className="text-[48px] mb-[16px]">📦</div>

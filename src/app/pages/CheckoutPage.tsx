@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import Layout from '../components/Layout';
 import { useApp, ShippingMethod, PaymentMethod } from '../context/AppContext';
+import { useNotification } from '../context/NotificationContext';
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const { user, cart, cartTotal, shippingMethods, paymentMethods, createOrder, isAuthenticated } = useApp();
+  const { showNotification } = useNotification();
   
   const [selectedShipping, setSelectedShipping] = useState<ShippingMethod>(shippingMethods[0]);
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>(paymentMethods[0]);
@@ -83,8 +85,8 @@ export default function CheckoutPage() {
     });
     
     setIsProcessing(false);
+    showNotification('order', 'Order placed successfully!');
     
-    // Navigate to order confirmation
     navigate(`/order-confirmation/${order.id}`);
   };
   
@@ -273,8 +275,8 @@ export default function CheckoutPage() {
                 
                 {/* Cart Items */}
                 <div className="space-y-[16px] mb-[24px] max-h-[300px] overflow-y-auto">
-                  {cart.map(item => (
-                    <div key={item.id} className="flex items-center gap-[12px]">
+                  {cart.map((item, idx) => (
+                    <div key={`${item.id}-${item.selectedShade?.id ?? idx}`} className="flex items-center gap-[12px]">
                       <div className="size-[60px] bg-[#fffbf0] rounded-[8px] overflow-hidden flex-shrink-0">
                         <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                       </div>
@@ -282,6 +284,17 @@ export default function CheckoutPage() {
                         <p className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[14px] text-[#2d2d2d] truncate">
                           {item.name}
                         </p>
+                        {item.selectedShade && (
+                          <div className="flex items-center gap-[4px]">
+                            <span
+                              className="inline-block size-[10px] rounded-full border border-gray-300"
+                              style={{ backgroundColor: item.selectedShade.color }}
+                            />
+                            <span className="font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[11px] text-[#4a5565]">
+                              {item.selectedShade.name}
+                            </span>
+                          </div>
+                        )}
                         <p className="font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[12px] text-[#4a5565]">
                           Qty: {item.quantity}
                         </p>
