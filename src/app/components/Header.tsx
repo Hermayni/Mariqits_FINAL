@@ -6,15 +6,13 @@ import imgEllipse261 from "figma:asset/8c6df8181bc3056efe2b6a0ae06f0995d03c6188.
 
 export default function Header() {
   const navigate = useNavigate();
-  const { user, isAuthenticated, searchQuery, setSearchQuery, cartCount, wishlist } = useApp();
-  const [searchInput, setSearchInput] = useState(searchQuery);
+  const { user, isAuthenticated, cartCount, wishlist } = useApp();
+  const [searchInput, setSearchInput] = useState('');
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setSearchQuery(searchInput);
-    // If not on home page, navigate to home with search query
-    if (window.location.pathname !== '/') {
-      navigate('/');
+    if (searchInput.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchInput.trim())}`);
     }
   };
   

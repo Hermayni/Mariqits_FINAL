@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
 
 // Types
 export interface Product {
@@ -186,7 +186,7 @@ const productsDb: Product[] = [
     reviews: 256,
     category: 'Makeup',
     description: 'Long-lasting, ultra-glossy lip gloss with moisturizing formula',
-    image: 'figma:asset/f2b98f90484bfeaf924e2e391f99994016e388dc.png',
+    image: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f8e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216%22 fill=%22%23cc5590%22%3EImage%3C/text%3E%3C/svg%3E',
     inStock: true
   },
   {
@@ -199,7 +199,7 @@ const productsDb: Product[] = [
     reviews: 192,
     category: 'Makeup',
     description: 'Versatile cream palette for eyes, cheeks, and lips',
-    image: 'figma:asset/7694c69aa680fc3a6d691bca021fe9bcf7ffe9dd.png',
+    image: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f8e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216%22 fill=%22%23cc5590%22%3EImage%3C/text%3E%3C/svg%3E',
     inStock: true
   },
   {
@@ -212,7 +212,7 @@ const productsDb: Product[] = [
     reviews: 167,
     category: 'Makeup',
     description: 'High-shine plumping gloss with vitamin E',
-    image: 'figma:asset/9a3bc1f281162d50c29f1e19d78195c3b78013ec.png',
+    image: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f8e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216%22 fill=%22%23cc5590%22%3EImage%3C/text%3E%3C/svg%3E',
     inStock: true
   },
   {
@@ -225,7 +225,7 @@ const productsDb: Product[] = [
     reviews: 178,
     category: 'Makeup',
     description: 'Precision brow pencil with long-lasting formula',
-    image: 'figma:asset/6d46372246009385106974cc4a7da11092837729.png',
+    image: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f8e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216%22 fill=%22%23cc5590%22%3EImage%3C/text%3E%3C/svg%3E',
     inStock: true
   }
 ];
@@ -459,7 +459,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return products.find(p => p.id === id);
   };
   
-  const searchProducts = (query: string) => {
+  const searchProducts = useCallback((query: string) => {
     if (!query) return products;
     const lowerQuery = query.toLowerCase();
     return products.filter(p => 
@@ -467,7 +467,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       p.brand.toLowerCase().includes(lowerQuery) ||
       p.category?.toLowerCase().includes(lowerQuery)
     );
-  };
+  }, [products]);
   
   // Cart actions
   const addToCart = (product: Product, quantity: number = 1) => {

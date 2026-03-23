@@ -43,7 +43,7 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
       rating: formData.rating,
       reviews: formData.reviews,
       status: parseInt(formData.stock) > 50 ? 'In Stock' : parseInt(formData.stock) > 0 ? 'Low Stock' : 'Out of Stock',
-      image: uploadedImages[0] || 'figma:asset/f2b98f90484bfeaf924e2e391f99994016e388dc.png',
+      image: uploadedImages[0] || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f8e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216%22 fill=%22%23cc5590%22%3EImage%3C/text%3E%3C/svg%3E',
       inStock: parseInt(formData.stock) > 0
     };
     
