@@ -39,8 +39,8 @@ export default function ProductCard({ product, showBadge = false }: { product: P
         onClick={handleToggleWishlist}
         className="absolute top-[24px] right-[24px] bg-white rounded-full p-[8px] shadow-md z-10 hover:bg-pink-50 transition-colors"
       >
-        <svg className="size-[20px]" fill={isInWishlist(product.id) ? "#ff1a75" : "none"} viewBox="0 0 22 20">
-          <path d={svgPaths.p1b764040} stroke="#FF1A75" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+        <svg className="size-[20px]" fill={isInWishlist(product.id) ? "#ff1a75" : "none"} viewBox="0 0 24 24">
+          <path d={svgPaths.p1dff4600} stroke="#FF1A75" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
         </svg>
       </button>
 

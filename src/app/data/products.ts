@@ -1,280 +1,439 @@
 import { Product } from '../context/AppContext';
 
-// Import product images
-import imgImageGelEyelinerPencil from "figma:asset/c46acde492e0504e7240eda748d1e57c57379955.png";
-import imgImageSettingSpray from "figma:asset/f1267c8577a448dfd3076abe6144ca7cd5e5fbf8.png";
-import imgImageRoseGoldEyeshadowPalette from "figma:asset/b068434488d448a92e246374a691632fe7ccf444.png";
-import imgContainer from "figma:asset/01c25020528a412612f067a4968b1018cc4c4a2c.png";
-import imgImageVelvetMatteLipstick from "figma:asset/56ee02927070bb83a4d4b6d30e9faf0089bf090d.png";
-import imgImageWithFallback from "figma:asset/f2b98f90484bfeaf924e2e391f99994016e388dc.png";
-import imgImageWithFallback1 from "figma:asset/7694c69aa680fc3a6d691bca021fe9bcf7ffe9dd.png";
-import imgImageWithFallback2 from "figma:asset/9a3bc1f281162d50c29f1e19d78195c3b78013ec.png";
-import imgImageWithFallback3 from "figma:asset/6d46372246009385106974cc4a7da11092837729.png";
-import imgImageWithFallback4 from "figma:asset/6d942f134fa03c515c4e27b72eb7692068130f19.png";
-import imgImageWithFallback5 from "figma:asset/352d55e37493cd3d9bbfed8103f804cf22f86415.png";
-import imgImageWithFallback6 from "figma:asset/a659c737197ee528953f60f31f643d693e4d9984.png";
-import imgImageWithFallback7 from "figma:asset/089c8641af4bd7542dde866bd94bfcba7b52f59d.png";
-import imgImageWithFallback8 from "figma:asset/cdc033fb64e02a729061efb6d04ed2f787f13a60.png";
-import imgImageWithFallback9 from "figma:asset/002a8efb7dadc0fcb99e9996d6e8fd591a6fa29e.png";
-import imgImageWithFallback10 from "figma:asset/4b0695257293cd76f4f03b184dca304321cd6cd8.png";
-import imgImageWithFallback11 from "figma:asset/a724a65849296e981d327d90c933e0c58e372915.png";
-import imgImageWithFallback12 from "figma:asset/9800b58b1f5d96c90331ee7a12d00941ef99681c.png";
-import imgImageWithFallback13 from "figma:asset/7619574ef475c3a4c1eaaf74edca805d5c45e7b5.png";
-import imgImageWithFallback14 from "figma:asset/e5ba792f14a138c0921959aaa21ac671e0ba9e65.png";
-import imgImageWithFallback15 from "figma:asset/9180bdb670af44b119103554ff31c7f10d2f47a7.png";
-import imgImageWithFallback16 from "figma:asset/061e13f8775dd92b46e687dfee272207073ac4b4.png";
-import imgImageWithFallback17 from "figma:asset/af6db02978cedebb91d5fa0c5187718c24cbb031.png";
-import imgImageWithFallback18 from "figma:asset/d5d9c207dd5b505193457c1d9977c12febc6d9b7.png";
-import imgImageWithFallback19 from "figma:asset/022fd55aaa95127189bc8a94bd2f5964eea40d3d.png";
-import imgImageWithFallback20 from "figma:asset/4905c51bf119578a6266d73104a970646aca9625.png";
-import imgImageWithFallback21 from "figma:asset/05fedc33536599ded973e3fd50ff6ad867207fa8.png";
-import imgImageWithFallback22 from "figma:asset/fc981e44d84c3c0a9abc00bdeb1d1f7f2106aa59.png";
+import imgProduct1 from "figma:asset/f2b98f90484bfeaf924e2e391f99994016e388dc.png";
+import imgProduct2 from "figma:asset/7694c69aa680fc3a6d691bca021fe9bcf7ffe9dd.png";
+import imgProduct3 from "figma:asset/9a3bc1f281162d50c29f1e19d78195c3b78013ec.png";
+import imgProduct4 from "figma:asset/6d46372246009385106974cc4a7da11092837729.png";
+import imgProduct5 from "figma:asset/6d942f134fa03c515c4e27b72eb7692068130f19.png";
+import imgProduct6 from "figma:asset/352d55e37493cd3d9bbfed8103f804cf22f86415.png";
+import imgProduct7 from "figma:asset/a659c737197ee528953f60f31f643d693e4d9984.png";
+import imgProduct8 from "figma:asset/089c8641af4bd7542dde866bd94bfcba7b52f59d.png";
+import imgProduct9 from "figma:asset/cdc033fb64e02a729061efb6d04ed2f787f13a60.png";
+import imgProduct10 from "figma:asset/002a8efb7dadc0fcb99e9996d6e8fd591a6fa29e.png";
+import imgProduct11 from "figma:asset/4b0695257293cd76f4f03b184dca304321cd6cd8.png";
+import imgProduct12 from "figma:asset/a724a65849296e981d327d90c933e0c58e372915.png";
+import imgProduct13 from "figma:asset/9800b58b1f5d96c90331ee7a12d00941ef99681c.png";
+import imgProduct14 from "figma:asset/7619574ef475c3a4c1eaaf74edca805d5c45e7b5.png";
+import imgProduct15 from "figma:asset/c46acde492e0504e7240eda748d1e57c57379955.png";
+import imgProduct16 from "figma:asset/f1267c8577a448dfd3076abe6144ca7cd5e5fbf8.png";
+import imgProduct17 from "figma:asset/b068434488d448a92e246374a691632fe7ccf444.png";
+import imgProduct18 from "figma:asset/56ee02927070bb83a4d4b6d30e9faf0089bf090d.png";
+import imgProduct19 from "figma:asset/e5ba792f14a138c0921959aaa21ac671e0ba9e65.png";
+import imgProduct20 from "figma:asset/9180bdb670af44b119103554ff31c7f10d2f47a7.png";
+import imgProduct21 from "figma:asset/061e13f8775dd92b46e687dfee272207073ac4b4.png";
+import imgProduct22 from "figma:asset/af6db02978cedebb91d5fa0c5187718c24cbb031.png";
+import imgProduct23 from "figma:asset/d5d9c207dd5b505193457c1d9977c12febc6d9b7.png";
+import imgProduct24 from "figma:asset/d5cb9b34b4966e5bd1c12ed1e319aa78d83daf90.png";
+import imgProduct25 from "figma:asset/022fd55aaa95127189bc8a94bd2f5964eea40d3d.png";
+import imgProduct26 from "figma:asset/4905c51bf119578a6266d73104a970646aca9625.png";
+import imgProduct27 from "figma:asset/05fedc33536599ded973e3fd50ff6ad867207fa8.png";
+import imgProduct28 from "figma:asset/5ddf44f50451b9bf927c871e307b11bf328c188a.png";
+import imgProduct29 from "figma:asset/01c25020528a412612f067a4968b1018cc4c4a2c.png";
+import imgProduct30 from "figma:asset/bc4cd1008d7767e49c0046c5a505b64e499255f5.png";
 
 export const products: Product[] = [
   {
     id: '1',
-    name: 'Staygloss',
-    brand: 'Sunrise Face',
+    name: 'Radiant Glow Filter',
+    brand: 'blk Cosmetics',
     price: 595.00,
-    image: imgImageWithFallback,
+    image: imgProduct1,
     rating: 4.5,
     reviews: 234,
     inStock: true,
     availableShades: 12,
     category: 'Makeup',
-    description: 'Long-lasting glossy finish for beautiful lips.'
+    description: 'Waterproof, sweat-resistant complexion booster for a radiant glow.',
+    stock: 78,
   },
   {
     id: '2',
-    name: 'Crème Flush Stick',
-    brand: 'Issy',
+    name: 'Compact Powder',
+    brand: 'POPIQUE',
     price: 449.00,
-    image: imgImageWithFallback1,
+    image: imgProduct2,
     rating: 4.8,
     reviews: 187,
     inStock: true,
     availableShades: 8,
     category: 'Makeup',
-    description: 'Creamy blush stick for a natural, healthy glow.'
+    description: 'Multitasking compact that acts as concealer, foundation, and contour.',
+    stock: 34,
   },
   {
     id: '3',
-    name: 'Active Foundation',
-    brand: 'Issy',
+    name: 'Matte Lipstick',
+    brand: 'absidy',
     price: 699.00,
-    image: imgImageWithFallback2,
+    image: imgProduct3,
     rating: 4.7,
     reviews: 324,
     inStock: true,
-    availableShades: 47,
+    availableShades: 6,
     category: 'Makeup',
-    description: 'A perfect pitch of weightless, buildable matte pinks and peaches, all in one pan.'
+    description: 'Velvety matte lipstick with long-lasting, buildable color.',
+    stock: 92,
   },
   {
     id: '4',
-    name: 'Healthy Touch Eyeshadow Palette',
-    brand: 'Sunrise Face',
-    price: 995.00,
-    image: imgImageWithFallback3,
+    name: 'Heart Lip Gloss',
+    brand: 'CloudBeauty',
+    price: 349.00,
+    image: imgProduct4,
     rating: 4.9,
     reviews: 456,
     inStock: true,
     category: 'Makeup',
-    description: 'Versatile eyeshadow palette with gorgeous neutral shades.'
+    description: 'Adorable heart-topped lip gloss with high-shine finish.',
+    stock: 103,
   },
   {
     id: '5',
-    name: 'Everyday Lip Oil',
-    brand: 'Issy',
-    price: 395.00,
-    image: imgImageWithFallback4,
+    name: 'Tri-Palette Compact',
+    brand: 'POPIQUE',
+    price: 499.00,
+    image: imgProduct5,
     rating: 4.6,
     reviews: 298,
     inStock: true,
     category: 'Makeup',
-    description: 'Nourishing lip oil for soft, hydrated lips.'
+    description: 'Three-shade blush palette in a range of pinks and peaches.',
+    stock: 65,
   },
   {
     id: '6',
-    name: 'Gentle Cleanser',
-    brand: 'Pure Glow',
-    price: 549.00,
-    image: imgImageWithFallback5,
+    name: 'Lip Gloss',
+    brand: 'Issy',
+    price: 395.00,
+    image: imgProduct6,
     rating: 4.7,
     reviews: 412,
     inStock: true,
-    category: 'Skincare',
-    description: 'Gentle daily cleanser for all skin types.'
+    category: 'Makeup',
+    description: 'Nourishing lip gloss with a smooth, glossy finish.',
+    stock: 88,
   },
   {
     id: '7',
-    name: 'Hydrating Serum',
-    brand: 'Radiance',
-    price: 1250.00,
-    image: imgImageWithFallback6,
+    name: 'Perfect Brows Grip',
+    brand: 'Happy Skin',
+    price: 299.00,
+    image: imgProduct7,
     rating: 4.9,
     reviews: 521,
     inStock: true,
-    category: 'Skincare',
-    description: 'Intensive hydration for plump, glowing skin.'
+    category: 'Makeup',
+    description: 'Long-lasting brow grip for perfectly styled brows all day.',
+    stock: 110,
   },
   {
     id: '8',
-    name: 'Matte Lipstick Set',
-    brand: 'Color Pop',
+    name: 'Loose Powder',
+    brand: 'GRWM',
     price: 895.00,
-    image: imgImageWithFallback7,
+    image: imgProduct8,
     rating: 4.8,
     reviews: 367,
     inStock: true,
-    availableShades: 24,
     category: 'Makeup',
-    description: 'Rich, velvety matte lipsticks in stunning shades.'
+    description: 'Ultra-fine loose powder by chromaesthetics for a flawless matte finish.',
+    stock: 47,
   },
   {
     id: '9',
-    name: 'Rose Water Toner',
-    brand: 'Natural Beauty',
+    name: 'Blush Stick',
+    brand: 'One & Done',
     price: 425.00,
-    image: imgImageWithFallback8,
+    image: imgProduct9,
     rating: 4.5,
     reviews: 289,
     inStock: true,
-    category: 'Skincare',
-    description: 'Refreshing rose water toner for balanced skin.'
+    availableShades: 6,
+    category: 'Makeup',
+    description: 'Creamy blush stick for a natural flush in six stunning shades.',
+    stock: 95,
   },
   {
     id: '10',
-    name: 'Glow Highlighter',
-    brand: 'Shimmer Co',
-    price: 749.00,
-    image: imgImageWithFallback9,
+    name: 'Lash Adhesive Glue',
+    brand: 'CloudBeauty',
+    price: 249.00,
+    image: imgProduct10,
     rating: 4.7,
     reviews: 434,
     inStock: true,
     category: 'Makeup',
-    description: 'Luminous highlighter for radiant skin.'
+    description: 'Super-sticky, transparent lash adhesive for a strong hold.',
+    stock: 120,
   },
   {
     id: '11',
-    name: 'Mascara Volume Boost',
-    brand: 'Lash Love',
-    price: 595.00,
-    image: imgImageWithFallback10,
+    name: 'Blush & Lip Cream',
+    brand: 'Lucky Beauty',
+    price: 349.00,
+    image: imgProduct11,
     rating: 4.6,
     reviews: 356,
     inStock: true,
     category: 'Makeup',
-    description: 'Volumizing mascara for dramatic lashes.'
+    description: 'Dual-purpose cream for cheeks and lips in rich berry tones.',
+    stock: 72,
   },
   {
     id: '12',
-    name: 'Vitamin C Cream',
-    brand: 'Glow Lab',
-    price: 1150.00,
-    image: imgImageWithFallback11,
+    name: 'Budge-Proof Gel Eyeliner',
+    brand: 'Happy Skin',
+    price: 345.00,
+    image: imgProduct12,
     rating: 4.8,
     reviews: 478,
     inStock: true,
-    category: 'Skincare',
-    description: 'Brightening cream with Vitamin C for even skin tone.'
+    availableShades: 2,
+    category: 'Makeup',
+    description: 'Smudge-proof gel eyeliner pencil in brown and black.',
+    stock: 85,
   },
   {
     id: '13',
-    name: 'Eyebrow Pencil',
-    brand: 'Arch Perfect',
-    price: 345.00,
-    image: imgImageWithFallback12,
+    name: 'Floral Blush Palette',
+    brand: 'Strokes',
+    price: 749.00,
+    image: imgProduct13,
     rating: 4.5,
     reviews: 267,
     inStock: true,
     category: 'Makeup',
-    description: 'Precise eyebrow pencil for natural-looking brows.'
+    description: 'Gorgeous floral-embossed blush palette in pink and lavender.',
+    stock: 54,
   },
   {
     id: '14',
-    name: 'Night Repair Cream',
-    brand: 'Restore Beauty',
-    price: 1450.00,
-    image: imgImageWithFallback13,
+    name: 'Fresh Face Palette',
+    brand: 'Jelly Fresh',
+    price: 995.00,
+    image: imgProduct14,
     rating: 4.9,
     reviews: 512,
     inStock: true,
-    category: 'Skincare',
-    description: 'Overnight repair cream for youthful skin.'
+    category: 'Makeup',
+    description: 'Multi-use palette with blush, eyeshadow, and bronzer.',
+    stock: 40,
   },
   {
     id: '15',
-    name: 'Gel Eyeliner Pencil',
-    brand: 'Line Perfect',
-    price: 425.00,
-    image: imgImageGelEyelinerPencil,
+    name: 'Mini Blush & Lip Cream Set',
+    brand: 'Lucky Beauty',
+    price: 249.00,
+    image: imgProduct15,
     rating: 4.6,
     reviews: 301,
     inStock: true,
     category: 'Makeup',
-    description: 'Smooth gel eyeliner for precise application.'
+    description: 'Travel-sized blush and lip cream set — mini 5.5g and full 8g.',
+    stock: 68,
   },
   {
     id: '16',
-    name: 'Setting Spray',
-    brand: 'Lock It',
+    name: 'Hydrating Concealer',
+    brand: 'Naturale',
     price: 595.00,
-    image: imgImageSettingSpray,
+    image: imgProduct16,
     rating: 4.7,
     reviews: 389,
     inStock: true,
+    availableShades: 5,
     category: 'Makeup',
-    description: 'Long-lasting setting spray to keep makeup fresh.'
+    description: 'Lightweight concealer with buildable coverage in five skin-matching shades.',
+    stock: 100,
   },
   {
     id: '17',
-    name: 'Rose Gold Eyeshadow Palette',
-    brand: 'Glam Glow',
-    price: 1295.00,
-    image: imgImageRoseGoldEyeshadowPalette,
+    name: 'Chrome Shimmer Lip Gloss',
+    brand: 'Issy',
+    price: 499.00,
+    image: imgProduct17,
     rating: 4.9,
     reviews: 567,
     inStock: true,
+    availableShades: 3,
     category: 'Makeup',
-    description: 'Stunning rose gold eyeshadow palette.'
+    description: 'Metallic shimmer lip gloss trio in rose, gunmetal, and bronze.',
+    stock: 55,
   },
   {
     id: '18',
-    name: 'Velvet Matte Lipstick',
-    brand: 'Velvet Lips',
-    price: 549.00,
-    image: imgImageVelvetMatteLipstick,
+    name: 'Smooth Blur Blush',
+    brand: 'CloudBeauty',
+    price: 399.00,
+    image: imgProduct18,
     rating: 4.8,
     reviews: 423,
     inStock: true,
-    availableShades: 18,
     category: 'Makeup',
-    description: 'Ultra-smooth velvet matte lipstick.'
+    description: 'Silky powder blush that blurs pores for a soft, airbrushed finish.',
+    stock: 82,
   },
   {
     id: '19',
-    name: 'Face Primer',
-    brand: 'Smooth Base',
+    name: 'Blurring Skin Tint SPF20',
+    brand: 'Happy Skin',
     price: 695.00,
-    image: imgImageWithFallback14,
+    image: imgProduct19,
     rating: 4.6,
     reviews: 334,
     inStock: true,
-    category: 'Makeup',
-    description: 'Smoothing primer for flawless makeup application.'
+    availableShades: 8,
+    category: 'Skincare',
+    description: 'Lightweight skin tint with SPF 20 for a natural, blurring effect.',
+    stock: 73,
   },
   {
     id: '20',
-    name: 'Sunscreen SPF 50',
-    brand: 'Sun Guard',
-    price: 795.00,
-    image: imgImageWithFallback15,
+    name: 'Glitter Quad Palette',
+    brand: 'la',
+    price: 1295.00,
+    image: imgProduct20,
     rating: 4.8,
     reviews: 445,
     inStock: true,
+    category: 'Makeup',
+    description: 'Four shimmer eyeshadow quads with beauty on your own terms.',
+    stock: 35,
+  },
+  {
+    id: '21',
+    name: 'OBMP Matte Stain',
+    brand: 'Naturale',
+    price: 395.00,
+    image: imgProduct21,
+    rating: 4.7,
+    reviews: 312,
+    inStock: true,
+    availableShades: 4,
+    category: 'Makeup',
+    description: 'Long-wear matte lip stain in four warm, earthy shades.',
+    stock: 90,
+  },
+  {
+    id: '22',
+    name: 'Glitter Lip Color',
+    brand: 'Lucky Beauty',
+    price: 329.00,
+    image: imgProduct22,
+    rating: 4.5,
+    reviews: 278,
+    inStock: true,
+    category: 'Makeup',
+    description: 'Shimmering glitter lip color for sparkling, party-ready lips.',
+    stock: 60,
+  },
+  {
+    id: '23',
+    name: 'All-Day Setting Spray',
+    brand: 'Issy',
+    price: 549.00,
+    image: imgProduct23,
+    rating: 4.8,
+    reviews: 401,
+    inStock: true,
+    category: 'Makeup',
+    description: 'Lightweight setting spray that locks makeup in place all day.',
+    stock: 105,
+  },
+  {
+    id: '24',
+    name: 'Lip Stain',
+    brand: 'Sunrise Face',
+    price: 349.00,
+    image: imgProduct24,
+    rating: 4.6,
+    reviews: 245,
+    inStock: true,
+    category: 'Makeup',
+    description: 'Rich, long-lasting lip stain in a deep mauve shade.',
+    stock: 78,
+  },
+  {
+    id: '25',
+    name: 'Heart Lipstick Set',
+    brand: 'CloudBeauty',
+    price: 899.00,
+    image: imgProduct25,
+    rating: 4.9,
+    reviews: 534,
+    inStock: true,
+    availableShades: 5,
+    category: 'Makeup',
+    description: 'Heart-shaped bullet lipsticks in chrome cases with five gorgeous shades.',
+    stock: 45,
+  },
+  {
+    id: '26',
+    name: 'Lip Oil',
+    brand: 'POPIQUE',
+    price: 399.00,
+    image: imgProduct26,
+    rating: 4.7,
+    reviews: 367,
+    inStock: true,
+    category: 'Makeup',
+    description: 'Hydrating lip oil with a juicy, glossy finish.',
+    stock: 88,
+  },
+  {
+    id: '27',
+    name: 'Graphic Eyeliner Set',
+    brand: 'Colourflick',
+    price: 795.00,
+    image: imgProduct27,
+    rating: 4.8,
+    reviews: 289,
+    inStock: true,
+    availableShades: 7,
+    category: 'Makeup',
+    description: 'Seven vibrant graphic eyeliners for bold, creative looks.',
+    stock: 52,
+  },
+  {
+    id: '28',
+    name: 'Nude Foundation',
+    brand: 'Issy',
+    price: 699.00,
+    image: imgProduct28,
+    rating: 4.6,
+    reviews: 398,
+    inStock: true,
+    availableShades: 10,
+    category: 'Makeup',
+    description: 'Skin-like nude foundation for a flawless, natural finish.',
+    stock: 67,
+  },
+  {
+    id: '29',
+    name: 'Blush Compact Collection',
+    brand: 'CloudBeauty',
+    price: 449.00,
+    image: imgProduct29,
+    rating: 4.7,
+    reviews: 356,
+    inStock: true,
+    availableShades: 10,
+    category: 'Makeup',
+    description: 'A stunning collection of blush compacts in every pink shade imaginable.',
+    stock: 60,
+  },
+  {
+    id: '30',
+    name: 'Beach Lip Balm',
+    brand: 'POPIQUE',
+    price: 299.00,
+    image: imgProduct30,
+    rating: 4.5,
+    reviews: 412,
+    inStock: true,
     category: 'Skincare',
-    description: 'Broad spectrum sun protection.'
+    description: 'Nourishing tinted lip balm with SPF protection for beach days.',
+    stock: 95,
   },
 ];
 

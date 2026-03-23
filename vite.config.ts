@@ -1,5 +1,6 @@
 import { defineConfig, Plugin } from 'vite'
 import path from 'path'
+import fs from 'fs'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
@@ -17,6 +18,11 @@ function figmaAssetPlugin(): Plugin {
     },
     load(id) {
       if (id.startsWith('\0figma-asset:')) {
+        const filename = id.replace('\0figma-asset:figma:asset/', '');
+        const localAsset = path.resolve(__dirname, 'src/assets', filename);
+        if (fs.existsSync(localAsset)) {
+          return `import img from ${JSON.stringify(localAsset)};\nexport default img;`;
+        }
         return `export default "${PLACEHOLDER_IMG}";`;
       }
     },
