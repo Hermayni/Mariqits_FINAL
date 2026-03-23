@@ -66,8 +66,8 @@ export default function CartPage() {
           <div className="grid grid-cols-3 gap-[32px]">
             {/* Cart Items */}
             <div className="col-span-2 space-y-[16px]">
-              {cart.map(item => (
-                <div key={item.id} className="bg-white border-[0.8px] border-[rgba(255,102,178,0.2)] rounded-[16px] p-[24px] flex gap-[24px]">
+              {cart.map((item, cartIdx) => (
+                <div key={`${item.id}-${item.selectedShade?.id ?? cartIdx}`} className="bg-white border-[0.8px] border-[rgba(255,102,178,0.2)] rounded-[16px] p-[24px] flex gap-[24px]">
                   <div className="size-[120px] bg-[#fffbf0] rounded-[12px] overflow-hidden flex-shrink-0">
                     <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                   </div>
@@ -75,9 +75,20 @@ export default function CartPage() {
                     <p className="font-['Plus_Jakarta_Sans:Medium',sans-serif] font-medium text-[12px] text-[#ff1a75] uppercase mb-[4px]">
                       {item.brand}
                     </p>
-                    <h3 className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[18px] text-[#2d2d2d] mb-[8px]">
+                    <h3 className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[18px] text-[#2d2d2d] mb-[4px]">
                       {item.name}
                     </h3>
+                    {item.selectedShade && (
+                      <div className="flex items-center gap-[6px] mb-[8px]">
+                        <span
+                          className="inline-block size-[14px] rounded-full border border-gray-300"
+                          style={{ backgroundColor: item.selectedShade.color }}
+                        />
+                        <span className="font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[13px] text-[#4a5565]">
+                          {item.selectedShade.name}
+                        </span>
+                      </div>
+                    )}
                     <p className="font-['Playfair_Display:Bold',sans-serif] font-bold text-[20px] text-[#2d2d2d] mb-[16px]">
                       ₱{item.price.toFixed(2)}
                       <span className="font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[14px] text-[#4a5565] ml-[8px]">
@@ -87,7 +98,7 @@ export default function CartPage() {
                     <div className="flex items-center gap-[16px]">
                       <div className="flex items-center border-[1px] border-[rgba(255,102,178,0.3)] rounded-[8px] overflow-hidden">
                         <button
-                          onClick={() => updateCartQuantity(item.id, item.quantity - 1)}
+                          onClick={() => updateCartQuantity(item.id, item.quantity - 1, item.selectedShade?.id)}
                           className="px-[16px] py-[8px] hover:bg-gray-50 transition-colors"
                         >
                           −
@@ -96,14 +107,14 @@ export default function CartPage() {
                           {item.quantity}
                         </div>
                         <button
-                          onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
+                          onClick={() => updateCartQuantity(item.id, item.quantity + 1, item.selectedShade?.id)}
                           className="px-[16px] py-[8px] hover:bg-gray-50 transition-colors"
                         >
                           +
                         </button>
                       </div>
                       <button
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => removeFromCart(item.id, item.selectedShade?.id)}
                         className="text-[#ff1a75] hover:underline font-['Plus_Jakarta_Sans:Medium',sans-serif] text-[14px]"
                       >
                         Remove

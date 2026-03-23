@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useAdmin, AdminProduct } from '../../context/AdminContext';
 
 interface AddProductModalProps {
@@ -20,8 +20,38 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
   });
   
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [shades, setShades] = useState<Array<{ id: string; name: string; color: string; stock: number }>>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   if (!isOpen) return null;
+  
+  const addShade = () =>
+    setShades(prev => [...prev, { id: Date.now().toString(), name: '', color: '#ff6b9d', stock: 0 }]);
+
+  const updateShade = (id: string, field: 'name' | 'color', value: string) =>
+    setShades(prev => prev.map(s => s.id === id ? { ...s, [field]: value } : s));
+
+  const updateShadeStock = (id: string, stock: number) =>
+    setShades(prev => prev.map(s => s.id === id ? { ...s, stock } : s));
+
+  const removeShade = (id: string) =>
+    setShades(prev => prev.filter(s => s.id !== id));
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    files.slice(0, 10 - uploadedImages.length).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setUploadedImages(prev => [...prev, ev.target?.result as string].slice(0, 10));
+      };
+      reader.readAsDataURL(file);
+    });
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+  
+  const removeImage = (index: number) => {
+    setUploadedImages(prev => prev.filter((_, i) => i !== index));
+  };
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
@@ -33,18 +63,24 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    const placeholderImage = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f8e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216%22 fill=%22%23cc5590%22%3EImage%3C/text%3E%3C/svg%3E';
+    const computedStock = shades.length > 0
+      ? shades.reduce((sum, s) => sum + s.stock, 0)
+      : parseInt(formData.stock);
     const newProduct: Omit<AdminProduct, 'id'> = {
       name: formData.name,
       brand: formData.brand,
       price: parseFloat(formData.price),
-      stock: parseInt(formData.stock),
+      stock: computedStock,
       category: formData.category,
       description: formData.description,
       rating: formData.rating,
       reviews: formData.reviews,
-      status: parseInt(formData.stock) > 50 ? 'In Stock' : parseInt(formData.stock) > 0 ? 'Low Stock' : 'Out of Stock',
-      image: uploadedImages[0] || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f8e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216%22 fill=%22%23cc5590%22%3EImage%3C/text%3E%3C/svg%3E',
-      inStock: parseInt(formData.stock) > 0
+      status: computedStock > 50 ? 'In Stock' : computedStock > 0 ? 'Low Stock' : 'Out of Stock',
+      image: uploadedImages[0] || placeholderImage,
+      images: uploadedImages.length > 0 ? uploadedImages : undefined,
+      inStock: computedStock > 0,
+      shades: shades.length > 0 ? shades : undefined
     };
     
     addProduct(newProduct);
@@ -60,6 +96,7 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
       reviews: 0
     });
     setUploadedImages([]);
+    setShades([]);
   };
   
   const handleCancel = () => {
@@ -75,6 +112,7 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
       reviews: 0
     });
     setUploadedImages([]);
+    setShades([]);
   };
   
   return (
@@ -162,16 +200,17 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
             {/* Stock Quantity */}
             <div>
               <label className="font-['Plus_Jakarta_Sans:Medium',sans-serif] font-medium text-[14px] text-[#2d2d2d] block mb-[8px]">
-                Stock Quantity *
+                Stock Quantity {shades.length > 0 ? '(auto-computed from shades)' : '*'}
               </label>
               <input
                 type="number"
                 name="stock"
-                value={formData.stock}
+                value={shades.length > 0 ? shades.reduce((sum, s) => sum + s.stock, 0) : formData.stock}
                 onChange={handleChange}
-                required
+                required={shades.length === 0}
+                disabled={shades.length > 0}
                 min="0"
-                className="w-full h-[44px] rounded-[12px] border-[1px] border-[rgba(0,0,0,0.1)] px-[16px] font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[14px] text-[#2d2d2d] outline-none focus:border-[#ff1a75] transition-colors"
+                className={`w-full h-[44px] rounded-[12px] border-[1px] border-[rgba(0,0,0,0.1)] px-[16px] font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[14px] text-[#2d2d2d] outline-none focus:border-[#ff1a75] transition-colors ${shades.length > 0 ? 'bg-gray-50 text-gray-500' : ''}`}
                 placeholder="0"
               />
             </div>
@@ -195,8 +234,16 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
             {/* Product Images */}
             <div>
               <label className="font-['Plus_Jakarta_Sans:Medium',sans-serif] font-medium text-[14px] text-[#2d2d2d] block mb-[8px]">
-                Product Images * (Max 10 images)
+                Product Images (Max 10 images)
               </label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                multiple
+                onChange={handleFileChange}
+                className="hidden"
+              />
               <div className="border-[2px] border-dashed border-[rgba(0,0,0,0.1)] rounded-[12px] p-[32px] text-center">
                 <div className="bg-[#ff1a75] rounded-full size-[56px] mx-auto mb-[16px] flex items-center justify-center">
                   <svg className="size-[24px]" fill="none" viewBox="0 0 24 24">
@@ -205,6 +252,7 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
                 </div>
                 <button
                   type="button"
+                  onClick={() => fileInputRef.current?.click()}
                   className="bg-[#ff1a75] text-white px-[24px] py-[12px] rounded-[26843500px] hover:bg-[#e01666] transition-colors font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[14px] mb-[8px]"
                 >
                   Choose Files
@@ -221,8 +269,77 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModalProp
                   </p>
                 )}
               </div>
+              {uploadedImages.length > 0 && (
+                <div className="flex flex-wrap gap-[8px] mt-[12px]">
+                  {uploadedImages.map((img, i) => (
+                    <div key={i} className="relative size-[72px] rounded-[8px] overflow-hidden border border-gray-200">
+                      <img src={img} alt={`Upload ${i + 1}`} className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(i)}
+                        className="absolute top-[2px] right-[2px] bg-red-500 text-white rounded-full size-[18px] flex items-center justify-center text-[11px] leading-none hover:bg-red-600"
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             
+            {/* Shades (optional) */}
+            <div>
+              <label className="font-['Plus_Jakarta_Sans:Medium',sans-serif] font-medium text-[14px] text-[#2d2d2d] block mb-[8px]">
+                Shades (optional)
+              </label>
+              {shades.map(shade => (
+                <div key={shade.id} className="flex items-center gap-[8px] mb-[8px]">
+                  <input
+                    type="color"
+                    value={shade.color}
+                    onChange={e => updateShade(shade.id, 'color', e.target.value)}
+                    className="size-[36px] rounded-[8px] border-[1px] border-[rgba(0,0,0,0.1)] cursor-pointer p-0"
+                  />
+                  <input
+                    type="text"
+                    value={shade.name}
+                    onChange={e => updateShade(shade.id, 'name', e.target.value)}
+                    placeholder="Shade name"
+                    className="flex-1 h-[36px] rounded-[8px] border-[1px] border-[rgba(0,0,0,0.1)] px-[12px] font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[13px] text-[#2d2d2d] outline-none focus:border-[#ff1a75] transition-colors"
+                  />
+                  <input
+                    type="number"
+                    value={shade.stock}
+                    onChange={e => updateShadeStock(shade.id, parseInt(e.target.value) || 0)}
+                    min="0"
+                    placeholder="Stock"
+                    className="w-[72px] h-[36px] rounded-[8px] border-[1px] border-[rgba(0,0,0,0.1)] px-[8px] font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[13px] text-[#2d2d2d] outline-none focus:border-[#ff1a75] transition-colors text-center"
+                    title="Stock for this shade"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeShade(shade.id)}
+                    className="text-red-500 hover:text-red-600 text-[18px] leading-none px-[4px]"
+                    title="Remove shade"
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addShade}
+                className="text-[#ff1a75] hover:text-[#e01666] font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[13px] flex items-center gap-[4px] mt-[4px]"
+              >
+                <span className="text-[16px]">+</span> Add Shade
+              </button>
+              {shades.length > 0 && (
+                <p className="font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[11px] text-[#4a5565] mt-[4px]">
+                  Total shade stock: {shades.reduce((sum, s) => sum + s.stock, 0)}
+                </p>
+              )}
+            </div>
+
             {/* Action Buttons */}
             <div className="flex gap-[16px] pt-[8px]">
               <button

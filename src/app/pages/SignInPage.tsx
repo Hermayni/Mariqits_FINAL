@@ -21,11 +21,11 @@ export default function SignInPage() {
     setLoading(true);
     
     try {
-      const success = await login(email, password);
-      if (success) {
-        navigate('/');
+      const result = await login(email, password);
+      if (result.success) {
+        navigate(email === 'admin@mariqits.com' ? '/admin' : '/');
       } else {
-        setError('Invalid email or password');
+        setError(result.error || 'Invalid email or password');
       }
     } catch (err) {
       setError('An error occurred. Please try again.');

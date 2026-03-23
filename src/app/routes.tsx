@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import Home from "./pages/Home";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
@@ -16,7 +16,24 @@ import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
 import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
+import ProductsPage from "./pages/ProductsPage";
 import NotFound from "./pages/NotFound";
+import { useApp } from "./context/AppContext";
+
+function AdminGuard({ children }: { children: React.ReactNode }) {
+  const { user, isAuthenticated } = useApp();
+  if (!isAuthenticated) return <Navigate to="/signin" replace />;
+  if (user?.email !== "admin@mariqits.com") return <Navigate to="/" replace />;
+  return <>{children}</>;
+}
+
+function CustomerGuard({ children }: { children: React.ReactNode }) {
+  const { user, isAuthenticated } = useApp();
+  if (isAuthenticated && user?.email === "admin@mariqits.com") {
+    return <Navigate to="/admin" replace />;
+  }
+  return <>{children}</>;
+}
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +43,10 @@ export const router = createBrowserRouter([
   {
     path: "/search",
     Component: SearchResultsPage,
+  },
+  {
+    path: "/products",
+    Component: ProductsPage,
   },
   {
     path: "/signin",
@@ -41,51 +62,51 @@ export const router = createBrowserRouter([
   },
   {
     path: "/cart",
-    Component: CartPage,
+    element: <CustomerGuard><CartPage /></CustomerGuard>,
   },
   {
     path: "/checkout",
-    Component: CheckoutPage,
+    element: <CustomerGuard><CheckoutPage /></CustomerGuard>,
   },
   {
     path: "/order-confirmation/:id",
-    Component: OrderConfirmationPage,
+    element: <CustomerGuard><OrderConfirmationPage /></CustomerGuard>,
   },
   {
     path: "/wishlist",
-    Component: WishlistPage,
+    element: <CustomerGuard><WishlistPage /></CustomerGuard>,
   },
   {
     path: "/profile",
-    Component: ProfilePage,
+    element: <CustomerGuard><ProfilePage /></CustomerGuard>,
   },
   {
     path: "/orders",
-    Component: OrdersPage,
+    element: <CustomerGuard><OrdersPage /></CustomerGuard>,
   },
   {
     path: "/order-details/:id",
-    Component: OrderDetailsPage,
+    element: <CustomerGuard><OrderDetailsPage /></CustomerGuard>,
   },
   {
     path: "/admin",
-    Component: AdminDashboard,
+    element: <AdminGuard><AdminDashboard /></AdminGuard>,
   },
   {
     path: "/admin/products",
-    Component: AdminProductsPage,
+    element: <AdminGuard><AdminProductsPage /></AdminGuard>,
   },
   {
     path: "/admin/orders",
-    Component: AdminOrdersPage,
+    element: <AdminGuard><AdminOrdersPage /></AdminGuard>,
   },
   {
     path: "/admin/users",
-    Component: AdminUsersPage,
+    element: <AdminGuard><AdminUsersPage /></AdminGuard>,
   },
   {
     path: "/admin/inventory",
-    Component: AdminInventoryPage,
+    element: <AdminGuard><AdminInventoryPage /></AdminGuard>,
   },
   {
     path: "*",

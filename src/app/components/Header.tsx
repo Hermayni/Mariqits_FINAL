@@ -139,8 +139,8 @@ export default function Header() {
               <div className="h-[24px] overflow-clip relative shrink-0 w-full">
                 <div className="absolute inset-[12.5%_8.33%]">
                   <div className="absolute inset-[-5.56%_-5%]">
-                    <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 22 20">
-                      <path d={svgPaths.p1b764040} stroke="#FF1A75" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+                    <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
+                      <path d={svgPaths.p1dff4600} stroke="#FF1A75" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
                     </svg>
                   </div>
                 </div>

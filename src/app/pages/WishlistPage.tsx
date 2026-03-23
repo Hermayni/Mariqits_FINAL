@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router';
 import Layout from '../components/Layout';
 import { useApp } from '../context/AppContext';
+import { useNotification } from '../context/NotificationContext';
 import svgPaths from '../../imports/svg-3n42949z3g';
 
 export default function WishlistPage() {
   const navigate = useNavigate();
   const { wishlist, removeFromWishlist, addToCart } = useApp();
+  const { showNotification } = useNotification();
   
   if (wishlist.length === 0) {
     return (
@@ -112,6 +114,7 @@ export default function WishlistPage() {
                       e.stopPropagation();
                       addToCart(product, 1);
                       removeFromWishlist(product.id);
+                      showNotification('cart', `${product.name} added to cart!`);
                     }}
                     className="bg-[#ff1a75] text-white px-[16px] py-[8px] rounded-[26843500px] hover:bg-[#e01666] transition-colors font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[14px]"
                   >
