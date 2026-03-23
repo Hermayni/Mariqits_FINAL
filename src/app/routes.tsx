@@ -15,12 +15,17 @@ import AdminProductsPage from "./pages/admin/AdminProductsPage";
 import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
 import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
+import SearchResultsPage from "./pages/SearchResultsPage";
 import NotFound from "./pages/NotFound";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     Component: Home,
+  },
+  {
+    path: "/search",
+    Component: SearchResultsPage,
   },
   {
     path: "/signin",
