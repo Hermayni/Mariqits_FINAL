@@ -1,9 +1,10 @@
+import React from 'react';
 import { RouterProvider } from 'react-router';
 import { AppProvider } from './context/AppContext';
 import { AdminProvider } from './context/AdminContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { router } from './routes';
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
 
 export default function App() {
   return (
