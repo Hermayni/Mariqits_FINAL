@@ -33,6 +33,11 @@ export interface AdminOrder {
   shippingAddress: AppOrder['shippingAddress'];
   timeline: AppOrder['timeline'];
   trackingNumber?: string;
+  paymentStatus: AppOrder['paymentStatus'];
+  paymongoPaymentMethod?: string;
+  transactionReferenceId?: string;
+  checkoutSessionId?: string;
+  paidAt?: string;
 }
 
 export interface AdminUser extends AppUser {
@@ -50,6 +55,7 @@ interface AdminContextType {
   adminOrders: AdminOrder[];
   getOrderById: (id: string) => AdminOrder | undefined;
   updateOrderStatus: (id: string, status: AppOrder['status']) => void;
+  updateOrder: (id: string, updates: Partial<AppOrder>) => void;
 
   adminUsers: AdminUser[];
   addUser: (user: Omit<AdminUser, 'id' | 'joined'>) => void;
@@ -123,6 +129,11 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           shippingAddress: o.shippingAddress,
           timeline: o.timeline,
           trackingNumber: o.trackingNumber,
+          paymentStatus: o.paymentStatus || 'pending',
+          paymongoPaymentMethod: o.paymongoPaymentMethod,
+          transactionReferenceId: o.transactionReferenceId,
+          checkoutSessionId: o.checkoutSessionId,
+          paidAt: o.paidAt,
         };
       }),
     [app.orders, app.users]
@@ -181,6 +192,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     app.updateOrderStatus(id, status);
   };
 
+  const updateOrder = (id: string, updates: Partial<AppOrder>) => {
+    app.updateOrder(id, updates);
+  };
+
   const addUser = (_user: Omit<AdminUser, 'id' | 'joined'>) => {
     // Users are added through the signup flow; this is a no-op placeholder
   };
@@ -195,7 +210,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
   const value: AdminContextType = {
     adminProducts, addProduct, updateProduct, deleteProduct,
-    adminOrders, getOrderById, updateOrderStatus,
+    adminOrders, getOrderById, updateOrderStatus, updateOrder,
     adminUsers, addUser, updateUser, deleteUser,
     stats,
   };
