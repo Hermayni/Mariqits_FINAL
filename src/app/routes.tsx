@@ -13,6 +13,7 @@ import OrderDetailsPage from "./pages/OrderDetailsPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProductsPage from "./pages/admin/AdminProductsPage";
 import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
+import AdminOrderDetailsPage from "./pages/admin/AdminOrderDetailsPage";
 import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
@@ -69,8 +70,8 @@ export const router = createBrowserRouter([
     element: <CustomerGuard><CheckoutPage /></CustomerGuard>,
   },
   {
-    path: "/order-confirmation/:id",
-    element: <CustomerGuard><OrderConfirmationPage /></CustomerGuard>,
+    path: "/order-confirmation",
+    Component: OrderConfirmationPage,
   },
   {
     path: "/wishlist",
@@ -99,6 +100,10 @@ export const router = createBrowserRouter([
   {
     path: "/admin/orders",
     element: <AdminGuard><AdminOrdersPage /></AdminGuard>,
+  },
+  {
+    path: "/admin/orders/:id",
+    element: <AdminGuard><AdminOrderDetailsPage /></AdminGuard>,
   },
   {
     path: "/admin/users",

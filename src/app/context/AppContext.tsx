@@ -88,6 +88,11 @@ export interface Order {
     date: string;
     completed: boolean;
   }>;
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
+  paymongoPaymentMethod?: string;
+  transactionReferenceId?: string;
+  checkoutSessionId?: string;
+  paidAt?: string;
 }
 
 export interface ProductReview {
@@ -148,10 +153,11 @@ interface AppContextType {
 
   // Orders
   orders: Order[];
-  createOrder: (orderData: Omit<Order, 'id' | 'userId' | 'date' | 'status' | 'timeline'>) => Order;
+  createOrder: (orderData: Omit<Order, 'id' | 'userId' | 'date' | 'status' | 'timeline' | 'paymentStatus'>) => Order;
   getOrderById: (id: string) => Order | undefined;
   getUserOrders: () => Order[];
   updateOrderStatus: (id: string, status: Order['status']) => void;
+  updateOrder: (id: string, updates: Partial<Order>) => void;
 
   // Reviews
   reviews: ProductReview[];
@@ -440,13 +446,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const isInWishlist = (productId: string) => wishlist.some(item => item.id === productId);
 
   // --- Orders ---
-  const createOrder = (orderData: Omit<Order, 'id' | 'userId' | 'date' | 'status' | 'timeline'>): Order => {
+  const createOrder = (orderData: Omit<Order, 'id' | 'userId' | 'date' | 'status' | 'timeline' | 'paymentStatus'>): Order => {
     const newOrder: Order = {
       ...orderData,
       id: `ORD-${Date.now()}`,
       userId: user?.id || '',
       date: new Date().toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }),
       status: 'Pending',
+      paymentStatus: 'pending',
       trackingNumber: `TRK${Date.now()}`,
       timeline: [
         { status: 'Order Placed', description: 'Your order has been received', date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }), completed: true },
@@ -456,8 +463,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       ]
     };
     setOrders(prev => [...prev, newOrder]);
-    clearCart();
     return newOrder;
+  };
+
+  const updateOrder = (id: string, updates: Partial<Order>) => {
+    setOrders(prev => prev.map(o => o.id === id ? { ...o, ...updates } : o));
   };
 
   const getOrderById = (id: string) => orders.find(o => o.id === id);
@@ -504,7 +514,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     wishlist, addToWishlist, removeFromWishlist, isInWishlist,
     searchQuery, setSearchQuery,
     shippingMethods, paymentMethods,
-    orders, createOrder, getOrderById, getUserOrders, updateOrderStatus,
+    orders, createOrder, getOrderById, getUserOrders, updateOrderStatus, updateOrder,
     reviews, addReview, getProductReviews
   };
 

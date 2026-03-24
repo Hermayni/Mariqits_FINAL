@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { useAdmin } from '../../context/AdminContext';
+import { getPaymentMethodLabel } from '../../utils/paymongo';
 
 export default function AdminOrdersPage() {
+  const navigate = useNavigate();
   const { adminOrders, updateOrderStatus } = useAdmin();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
@@ -29,6 +32,16 @@ export default function AdminOrdersPage() {
       case 'Processing': return 'bg-yellow-100 text-yellow-800';
       case 'Pending': return 'bg-gray-100 text-gray-800';
       case 'Cancelled': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getPaymentStatusBadge = (status: string) => {
+    switch (status) {
+      case 'paid': return 'bg-green-100 text-green-800';
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      case 'failed': return 'bg-red-100 text-red-800';
+      case 'refunded': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -100,9 +113,12 @@ export default function AdminOrdersPage() {
                     <th className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[12px] text-[#4a5565] text-left py-[12px] px-[16px] uppercase">Date</th>
                     <th className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[12px] text-[#4a5565] text-center py-[12px] px-[16px] uppercase">Items</th>
                     <th className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[12px] text-[#4a5565] text-right py-[12px] px-[16px] uppercase">Total</th>
-                    <th className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[12px] text-[#4a5565] text-center py-[12px] px-[16px] uppercase">Payment</th>
+                    <th className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[12px] text-[#4a5565] text-center py-[12px] px-[16px] uppercase">Payment Status</th>
+                    <th className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[12px] text-[#4a5565] text-center py-[12px] px-[16px] uppercase">Payment Method</th>
+                    <th className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[12px] text-[#4a5565] text-center py-[12px] px-[16px] uppercase">Transaction ID</th>
                     <th className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[12px] text-[#4a5565] text-center py-[12px] px-[16px] uppercase">Status</th>
-                    <th className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[12px] text-[#4a5565] text-center py-[12px] px-[24px] uppercase">Update Status</th>
+                    <th className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[12px] text-[#4a5565] text-center py-[12px] px-[16px] uppercase">Update Status</th>
+                    <th className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[12px] text-[#4a5565] text-center py-[12px] px-[24px] uppercase">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -124,8 +140,25 @@ export default function AdminOrdersPage() {
                       <td className="py-[16px] px-[16px] text-right">
                         <p className="font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[14px] text-[#2d2d2d]">₱{order.total.toLocaleString()}</p>
                       </td>
+                      <td className="py-[16px] px-[16px]">
+                        <div className="flex justify-center">
+                          <span className={`inline-block px-[10px] py-[4px] rounded-[26843500px] font-['Plus_Jakarta_Sans:SemiBold',sans-serif] font-semibold text-[11px] capitalize ${getPaymentStatusBadge(order.paymentStatus)}`}>
+                            {order.paymentStatus === 'paid' ? 'Paid' :
+                             order.paymentStatus === 'pending' ? 'Pending' :
+                             order.paymentStatus === 'failed' ? 'Failed' :
+                             order.paymentStatus === 'refunded' ? 'Refunded' : order.paymentStatus}
+                          </span>
+                        </div>
+                      </td>
                       <td className="py-[16px] px-[16px] text-center">
-                        <p className="font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[14px] text-[#4a5565]">{order.payment}</p>
+                        <p className="font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[13px] text-[#4a5565]">
+                          {order.paymongoPaymentMethod ? getPaymentMethodLabel(order.paymongoPaymentMethod) : '—'}
+                        </p>
+                      </td>
+                      <td className="py-[16px] px-[16px] text-center">
+                        <p className="font-['Plus_Jakarta_Sans:Regular',sans-serif] text-[12px] text-[#4a5565] max-w-[120px] truncate mx-auto" title={order.transactionReferenceId || ''}>
+                          {order.transactionReferenceId || '—'}
+                        </p>
                       </td>
                       <td className="py-[16px] px-[16px]">
                         <div className="flex justify-center">
@@ -134,7 +167,7 @@ export default function AdminOrdersPage() {
                           </span>
                         </div>
                       </td>
-                      <td className="py-[16px] px-[24px]">
+                      <td className="py-[16px] px-[16px]">
                         <div className="flex justify-center">
                           <select
                             value={order.status}
@@ -147,6 +180,16 @@ export default function AdminOrdersPage() {
                             <option value="Delivered">Delivered</option>
                             <option value="Cancelled">Cancelled</option>
                           </select>
+                        </div>
+                      </td>
+                      <td className="py-[16px] px-[24px]">
+                        <div className="flex justify-center">
+                          <button
+                            onClick={() => navigate(`/admin/orders/${order.id}`)}
+                            className="text-[#ff1a75] hover:underline font-['Plus_Jakarta_Sans:Medium',sans-serif] font-medium text-[13px]"
+                          >
+                            View
+                          </button>
                         </div>
                       </td>
                     </tr>
