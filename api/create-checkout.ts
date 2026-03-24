@@ -38,7 +38,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               currency: 'PHP',
               quantity: item.quantity,
             })),
-            payment_method_types: ['gcash', 'card', 'paymaya', 'dob', 'dob_ubp'],
+            payment_method_types: ['qrph'],
             success_url,
             cancel_url,
             description: `Mariqits Order ${orderId || ''}`.trim(),
